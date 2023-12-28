@@ -9,11 +9,13 @@ namespace StockServer
     public partial class Form1 : Form
     {
         private StockDataServer dataServer;
+        private Logger logger;
         public Form1()
         {
             InitializeComponent();
+            logger = new Logger("logfile.txt");
             // 初始化数据服务器
-            dataServer = new StockDataServer();
+            dataServer = new StockDataServer(logger);
             btnStartServer.BackColor = Color.Gray;
         }
         private void btnStartServer_Click(object sender, EventArgs e)

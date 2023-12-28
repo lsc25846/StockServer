@@ -16,6 +16,12 @@ namespace StockServer
         private TcpListener tcpListener;
         private Thread listenThread;
         private bool isRunning = false;
+        private readonly Logger logger;
+
+        public StockDataServer(Logger logger) 
+        {
+            this.logger = logger;
+        }
 
         public void StartServer(string ipAddress, int port)
         {
@@ -24,6 +30,7 @@ namespace StockServer
             listenThread = new Thread(new ThreadStart(ListenForClients));
             isRunning = true;
             listenThread.Start();
+            logger.LogInfo("Server start.");
         }
 
         private void ListenForClients()
@@ -48,6 +55,7 @@ namespace StockServer
             try
             {
                 clientStream = tcpClient.GetStream();
+                logger.LogInfo("Client connected.");
                 // Enter a loop to send stock data to client
                 while (isRunning)
                 {
@@ -65,11 +73,13 @@ namespace StockServer
             {
                 // IOException is thrown when the client disconnects
                 Console.WriteLine("Client disconnected: " + ex.Message);
+                logger.LogError(ex);
             }
             catch (Exception ex)
             {
                 // Handle other exceptions if necessary
                 Console.WriteLine("Error: " + ex.Message);
+                logger.LogError(ex);
             }
             finally 
             {
